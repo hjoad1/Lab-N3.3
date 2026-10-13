@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "smartspeechcoach"
-  }
+    "default": "gen-lang-client-0800605818"
+  },
+  "targets": {},
+  "etags": {}
 }
