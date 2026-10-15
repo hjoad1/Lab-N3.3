@@ -350,9 +350,39 @@ React Frontend
 
 ## N3.3 vs N3.4
 
-| Lab | Backend Deployment | Frontend |
-|---|---|---|
-| N3.3 | Google Cloud Run | Firebase Hosting / React |
-| N3.4 | AWS Elastic Beanstalk | Local React frontend |
+## AWS Elastic Beanstalk vs Google Cloud Run
 
-The purpose of Lab N3.4 is to demonstrate that the same Node.js/Express application can be deployed to a different cloud platform without rewriting the application logic.
+Both AWS Elastic Beanstalk and Google Cloud Run were able to run the same Smart Speech Coach backend.
+
+| Feature | AWS Elastic Beanstalk | Google Cloud Run |
+|---|---|---|
+| Deployment | Upload backend ZIP file | Deploy directly from source |
+| Setup | More configuration required | Simpler setup |
+| Scaling | Configured through the environment | Automatically handled |
+| Control | More control over the environment | Less infrastructure management |
+| Code changes | No backend code changes required | No backend code changes required |
+
+### AWS Elastic Beanstalk
+
+**Advantages**
+- More control over the application environment.
+- Good for traditional web applications.
+- Environment settings are easy to view and manage.
+
+**Disadvantages**
+- Requires more setup.
+- The environment must be managed and terminated when no longer needed.
+- Deployment requires preparing a ZIP file.
+
+### Google Cloud Run
+
+**Advantages**
+- Easier and faster to deploy.
+- Automatically scales based on traffic.
+- Requires less infrastructure management.
+
+**Disadvantages**
+- Gives less control over the underlying environment.
+- Mainly designed for stateless services and APIs.
+
+For this project, both platforms worked successfully with the same Node.js/Express backend. The main difference was that Elastic Beanstalk required more environment setup, while Cloud Run was simpler and more automated.
