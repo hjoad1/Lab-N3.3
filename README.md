@@ -213,6 +213,8 @@ No application logic was rewritten for AWS. The same backend code from Lab N3.3 
 
 The backend was deployed as a Node.js web-server environment using AWS Elastic Beanstalk.
 
+![AWS Elastic Beanstalk environment](images/18_aws_elastic_beanstalk_environment.png)
+
 Deployed backend:
 
 ```text
@@ -232,6 +234,8 @@ Expected response:
   "status": "ok"
 }
 ```
+
+![AWS backend health check](images/19_aws_backend_health.png)
 
 ## Backend Deployment Package
 
@@ -329,6 +333,8 @@ POST /api/askanything
 ```
 
 The `/api/askanything` endpoint successfully returned a Gemini-generated response.
+
+![React frontend using AWS backend](images/17_aws_frontend_gemini_response.png)
 
 The complete request flow for Lab N3.4 is:
 
