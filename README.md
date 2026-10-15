@@ -89,7 +89,7 @@ curl http://localhost:3001/api/health
 
 ![Local backend health response](images/3_frontend_showing_health.png)
 
-## Google Cloud Run Deployment
+# Lab N3.3 — Google Cloud Run
 
 ```bash
 gcloud auth login
@@ -176,3 +176,177 @@ confirm that the answer is displayed. The browser sends `POST /api/askanything`
 to Cloud Run and renders the returned `answer`.
 
 ![Live Firebase frontend](images/16_firebase_frontend_live_web.png)
+
+---
+
+# Lab N3.4 — AWS Elastic Beanstalk
+
+Lab N3.4 uses the same Smart Speech Coach application developed for Lab N3.3, but deploys the existing Node.js/Express backend to **AWS Elastic Beanstalk** instead of Google Cloud Run.
+
+The React frontend continues to communicate with the backend using the same `fetch()` request and REST API endpoints.
+
+## N3.4 Architecture
+
+```text
+React + Vite Frontend
+        |
+        | fetch()
+        v
+AWS Elastic Beanstalk
+        |
+        v
+Node.js + Express Backend
+        |
+        v
+Google Gemini API
+        |
+        v
+JSON Response
+        |
+        v
+React UI
+```
+
+No application logic was rewritten for AWS. The same backend code from Lab N3.3 was reused.
+
+## AWS Elastic Beanstalk Deployment
+
+The backend was deployed as a Node.js web-server environment using AWS Elastic Beanstalk.
+
+Deployed backend:
+
+```text
+http://smartspeechcoach-env.eba-gpqzpnwp.us-east-2.elasticbeanstalk.com
+```
+
+Health endpoint:
+
+```text
+http://smartspeechcoach-env.eba-gpqzpnwp.us-east-2.elasticbeanstalk.com/api/health
+```
+
+Expected response:
+
+```json
+{
+  "status": "ok"
+}
+```
+
+## Backend Deployment Package
+
+Only the backend files required by Elastic Beanstalk were included in the deployment ZIP:
+
+```text
+server.js
+package.json
+package-lock.json
+```
+
+The files were placed directly at the root of the ZIP archive.
+
+The following were not included:
+
+```text
+node_modules/
+.env
+frontend/
+```
+
+Sensitive values such as the Gemini API key were not uploaded in the ZIP or committed to GitHub.
+
+## Elastic Beanstalk Environment Configuration
+
+The backend environment variables were configured through:
+
+```text
+AWS Elastic Beanstalk
+-> Environment
+-> Configuration
+-> Software
+-> Environment properties
+```
+
+The following properties were configured:
+
+```text
+GEMINI_API_KEY
+geminiAskAnythingModel
+allowedOrigins
+askAnythingPrompt
+```
+
+The Gemini API key is stored only as an Elastic Beanstalk environment property and is not stored in this repository.
+
+The existing backend already supports a cloud-provided port:
+
+```javascript
+const port = process.env.PORT || 3001;
+```
+
+This allows the same code to work locally and in Elastic Beanstalk.
+
+## Connect the React Frontend to AWS
+
+For Lab N3.4, the local React frontend was configured to send requests to the Elastic Beanstalk backend.
+
+The local `frontend/.env` configuration was:
+
+```env
+VITE_SERVER_REMOTE=Y
+VITE_SERVER_URL_REMOTE=http://smartspeechcoach-env.eba-gpqzpnwp.us-east-2.elasticbeanstalk.com
+VITE_SERVER_URL_LOCAL=http://localhost:3001
+```
+
+The real `.env` file is excluded from GitHub.
+
+After restarting the Vite development server:
+
+```bash
+npm run dev
+```
+
+the frontend runs at:
+
+```text
+http://localhost:5173
+```
+
+and sends requests to the AWS-hosted backend.
+
+## N3.4 Verification
+
+The AWS backend was verified using:
+
+```text
+GET /api/health
+```
+
+and:
+
+```text
+POST /api/askanything
+```
+
+The `/api/askanything` endpoint successfully returned a Gemini-generated response.
+
+The complete request flow for Lab N3.4 is:
+
+```text
+React Frontend
+-> fetch()
+-> AWS Elastic Beanstalk
+-> Express Backend
+-> Gemini API
+-> JSON Response
+-> React UI
+```
+
+## N3.3 vs N3.4
+
+| Lab | Backend Deployment | Frontend |
+|---|---|---|
+| N3.3 | Google Cloud Run | Firebase Hosting / React |
+| N3.4 | AWS Elastic Beanstalk | Local React frontend |
+
+The purpose of Lab N3.4 is to demonstrate that the same Node.js/Express application can be deployed to a different cloud platform without rewriting the application logic.
