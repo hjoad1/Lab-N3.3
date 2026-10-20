@@ -2,9 +2,13 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { GoogleGenAI } from '@google/genai';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Create the Express application. Express handles our backend routes.
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Use Cloud Run's PORT value when deployed, or the port value from backend/.env locally.
 // If neither is set, the backend runs on port 3001.
@@ -105,6 +109,14 @@ User question: ${message}`;
       error: 'Smart Speech Coach could not answer right now.',
     });
   }
+});
+
+// Serve the built React frontend from backend/public
+app.use(express.static(path.join(__dirname, 'public')));
+
+// For any non-API route, return the React app
+app.get(/^(?!\/api).*/, (request, response) => {
+  response.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Start the backend and print the local URL in the terminal.
